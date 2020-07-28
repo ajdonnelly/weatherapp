@@ -20,11 +20,29 @@ var currentTitleEl = document.querySelector("#current-title");
 var iconEl = document.querySelector("#icon");
 var city = cityInputEl.value.trim();
 
-
+//show search history
+  function showHistory(city) {
+   
+    var liEl = document.createElement("li")
+    liEl.classList.add("search-item");
+    var cityText = city;
+    liEl.textContent = cityText;
+    var searchEl = document.querySelector('.search-history');
+    console.log(event.target)
+    console.log(event.target.textContent)  
+    searchEl.onclick = function(){
+        
+      if (event.target.tagName == "LI"){
+           
+      getLatLong(event.target.textContent);
+      getFiveDay(event.target.textContent);
+      
+      }
+    }
+    searchEl.appendChild(liEl);
+  };
 
 //use api to convert city to lat lon
-
-
 var getLatLong = function(city) {
         
         var latLongUrl = "https://api.opencagedata.com/geocode/v1/json?q=" + city + "&key=e5bb290b439f487ca743a626a13e4095&pretty=1";
@@ -42,27 +60,9 @@ var getLatLong = function(city) {
         alert("Error: " + response.statusText);
         }
     });
-    
-
 }
 
-//show search history
-  function showHistory(city) {
-   
-    var liEl = document.createElement("li")
-    liEl.classList.add("list-group-item", "list-group-item-action");
-    var text = city;
-    liEl.textContent = text;
-    var historyEl = document.querySelector('.history');
-    console.log(event.target)
-    historyEl.onclick = function(){
-        console.log(event.target.tagName)
-      if (event.target.tagName == "LI"){     
-      getLatLong(event.target.textContent)
-      }
-    }
-    historyEl.appendChild(liEl);
-  };
+
 
   //get the five day forecast
 var getFiveDay = function(city) {
@@ -117,17 +117,12 @@ var displayWeather = function(weather, city) {
     cityDateContainerEl.textContent = " ";
     tempContainerEl.textContent = " ";
     uvIndexContainerEl.textContent = " ";
-    // uvInfo.textContent = " ";
     windSpeedContainerEl.textContent = " ";
     humidityContainerEl.textContent = " ";
 
-        // var currentTitle =  document.createElement("div");  
-        // currentTitle.innerHTML = "Today's Weather: ";
-        // currentTitle.classList = "current-title";
-        // currentTitleEl.appendChild(currentTitle);
-        
     var weatherArr = weather;
     console.log(weatherArr)
+    console.log(city)
     console.log(location.search)
   
         var today = new Date();
@@ -227,6 +222,7 @@ var getFiveDayWeather = function(fiveDay, city) {
     day3ContainerEl.textContent = " ";
     day4ContainerEl.textContent = " ";
     day5ContainerEl.textContent = " ";
+    
 
     // show Five Day Forecast Title
         
@@ -237,19 +233,18 @@ var getFiveDayWeather = function(fiveDay, city) {
 
        
     
-         //put in date for current weather using this api
+         //show city name
         var currentCity = forecastArr.city.name;
         var currCity =  document.createElement("div");
         currCity.classList.add("show-title");
         currCity.innerHTML = currentCity;
         cityNameEl.appendChild(currCity);
     
-
-    var day1DateInfo = forecastArr.list[6].dt_txt;
+        //show day-1
+        var day1DateInfo = forecastArr.list[6].dt_txt;
         var justDateDay1 = day1DateInfo.split(" ")[0];
         var onlyDateDay1 = justDateDay1;
         var day1List =  document.createElement("div");
-        // currDate.classList.add("show-title");
         day1List.innerHTML = onlyDateDay1;
         day1ContainerEl.appendChild(day1List);
          
@@ -406,47 +401,19 @@ var getFiveDayWeather = function(fiveDay, city) {
         day5ContainerEl.classList.add("forecast-card");
 }
 var formSubmitHandler = function(event) {
-    
-    // updateWeatherCont = document.querySelector("#weather-container");
-    // updateForecastCont = document.querySelector("#forecast-container");
-    // updateWeatherCont.textContent = " ";
-    // updateForecastCont.textContent = " ";
-
-    // todayEl = document.querySelector(".img");
-    // todayEl.textContent = " ";
-   
-    
 
     event.preventDefault();
 
-    
     // get value from input element
   var city = cityInputEl.value.trim();
 
   if (city) {
-    //   weatherContainerEl.display = " ";
-    //   forecastContainerEl.textContent = " ";  
-   
-  
+ 
   getLatLong(city);
   getFiveDay(city);
   showHistory(city);
   cityInputEl.value = "";
 
-//   fiveDayTitle.textContent = " ";
-  
-    // cityDateContainerEl.value = "";
-    // tempContainerEl.value = "";
-    // humidityContainerEl.value = "";
-    // windSpeedContainerEl.value = "";
-    // uvIndexContainerEl.value = "";
-    // day1ContainerEl.value = "";
-    // day2ContainerEl.value = "";
-    // day3ContainerEl.value = "";
-    // day4ContainerEl.value = "";
-    // day5ContainerEl.value = "";
-    // forecastContainerEl.value = "";
-    // iconEl.value = "";
   } else {
   alert("Please enter a city");
   }
